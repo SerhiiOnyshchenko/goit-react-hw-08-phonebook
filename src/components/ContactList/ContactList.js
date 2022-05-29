@@ -1,28 +1,32 @@
-import ContactItem from './ContactItem/ContactItem';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import s from './ContactList.module.css';
-import { useFetchContactsQuery } from 'redux/contacts/contactsApi';
-import { useSelector } from 'react-redux';
-import { getFilter } from 'redux/contacts/contact-selectors';
+import { ContactsSelectors, ContactsOperations } from 'redux/contacts';
+import ContactItem from './ContactItem/ContactItem';
 
-export default function ContactList() {
-   const { data, error, isLoading } = useFetchContactsQuery();
-   const filter = useSelector(getFilter);
+export default function ContactList({ filter }) {
+   const contacts = useSelector(ContactsSelectors.getContacts);
+   const isLoading = useSelector(ContactsSelectors.getIsLoading);
+   const dispatch = useDispatch();
+
+   useEffect(() => {
+      dispatch(ContactsOperations.fetchContacts());
+   }, [dispatch]);
 
    const getVisibleContacts =
-      data &&
-      data.filter(contact =>
+      contacts &&
+      contacts.filter(contact =>
          contact.name.toLocaleLowerCase().includes(filter.toLocaleLowerCase())
       );
    return (
       <div>
-         {error ? (
-            <h2>{error.data}</h2>
-         ) : isLoading ? (
-            <h2>Loadong...</h2>
+         {isLoading ? (
+            <h2>Loading...</h2>
          ) : getVisibleContacts?.length ? (
             <ul className={s.list}>
-               {getVisibleContacts.map(({ id, name, phone }) => (
-                  <ContactItem key={id} id={id} name={name} number={phone} />
+               {getVisibleContacts.map(({ id, name, number }) => (
+                  <ContactItem key={id} id={id} name={name} number={number} />
                ))}
             </ul>
          ) : (
@@ -31,3 +35,6 @@ export default function ContactList() {
       </div>
    );
 }
+ContactList.propTypes = {
+   filter: PropTypes.string.isRequired,
+};

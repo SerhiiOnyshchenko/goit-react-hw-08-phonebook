@@ -41,4 +41,9 @@
 	margin-top: 20px;
 	color: inherit;
 	text-decoration: none;
+	transition: letter-spacing 0.5s linear;
+}
+.form a:hover {
+	cursor: pointer;
+	letter-spacing: 1.2px;
 }

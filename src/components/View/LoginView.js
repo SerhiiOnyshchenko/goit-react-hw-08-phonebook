@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import Container from '../Container/Container';
-import s from './LoginView.module.css';
+import s from './Form.module.css';
 import sBtn from '../../App.module.css';
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useDispatch } from 'react-redux';
-import { AuthOperations } from 'redux/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { AuthOperations, AuthSelector } from 'redux/auth';
 import { NavLink } from 'react-router-dom';
 
 export default function LoginView() {
+   const dispatch = useDispatch();
+   const isLoading = useSelector(AuthSelector.getIsLoggedIn);
+
    const [email, setEmail] = useState('');
    const [password, setPassword] = useState('');
-   const dispatch = useDispatch();
 
-   const onSubmitForm = async e => {
+   const onSubmitForm = e => {
       e.preventDefault();
       dispatch(AuthOperations.logIn({ email, password }));
-      toast.success(`Login!`);
       setEmail('');
       setPassword('');
    };
@@ -49,23 +49,10 @@ export default function LoginView() {
                />
             </label>
             <div className={sBtn.btn + ' ' + s.btn}>
-               <button
-                  type="submit"
-                  // disabled={isLoading}
-               >
+               <button type="submit" disabled={isLoading}>
                   Login
                </button>
             </div>
-            <ToastContainer
-               autoClose={3000}
-               hideProgressBar={false}
-               newestOnTop={false}
-               closeOnClick
-               rtl={false}
-               pauseOnFocusLoss
-               draggable
-               pauseOnHover
-            />
             <NavLink to="/register">To register form.</NavLink>
          </form>
       </Container>

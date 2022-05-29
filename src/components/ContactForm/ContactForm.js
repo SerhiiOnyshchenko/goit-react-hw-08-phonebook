@@ -1,21 +1,23 @@
 import { useState } from 'react';
 import s from './ContactForm.module.css';
 import sBtn from '../../App.module.css';
-import { useAddContactMutation } from 'redux/contacts/contactsApi';
-import { useFetchContactsQuery } from 'redux/contacts/contactsApi';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { ContactsOperations, ContactsSelectors } from 'redux/contacts';
 
 export default function ContactForm() {
-   const { data } = useFetchContactsQuery();
    const [name, setName] = useState('');
-   const [phone, setPhone] = useState('');
-   const [addContact, { isLoading }] = useAddContactMutation();
+   const [number, setNumber] = useState('');
 
-   const onSubmitForm = async e => {
+   const contacts = useSelector(ContactsSelectors.getContacts);
+   const isRefreshing = useSelector(ContactsSelectors.getIsRefreshing);
+   const dispatch = useDispatch();
+
+   const onSubmitForm = e => {
       e.preventDefault();
       if (
-         data.find(
+         contacts.find(
             contact =>
                contact.name.toLocaleLowerCase() === name.toLocaleLowerCase()
          )
@@ -23,10 +25,9 @@ export default function ContactForm() {
          toast.warning(`${name} is alredy in contacts`);
          return;
       }
-      await addContact({ name, phone });
-      toast.success(`Contact is create!`);
+      dispatch(ContactsOperations.addContact({ name, number }));
       setName('');
-      setPhone('');
+      setNumber('');
    };
 
    return (
@@ -47,10 +48,10 @@ export default function ContactForm() {
          <label className={s.label}>
             Number
             <input
-               onChange={e => setPhone(e.target.value)}
+               onChange={e => setNumber(e.target.value)}
                type="tel"
                name="number"
-               value={phone}
+               value={number}
                placeholder="XXX-XX-XX"
                pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
@@ -58,20 +59,10 @@ export default function ContactForm() {
             />
          </label>
          <div className={sBtn.btn + ' ' + s.btn}>
-            <button type="submit" disabled={isLoading}>
+            <button type="submit" disabled={isRefreshing}>
                Add contact
             </button>
          </div>
-         <ToastContainer
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-         />
       </form>
    );
 }
