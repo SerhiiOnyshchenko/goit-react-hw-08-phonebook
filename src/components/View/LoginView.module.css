@@ -36,3 +36,9 @@
 	background: #1eff45;
 	box-shadow: 0 0 5px #1eff45, 0 0 15px #1eff45, 0 0 30px #1eff45, 0 0 60px #1eff45;
 }
+.form a {
+	display: block;
+	margin-top: 20px;
+	color: inherit;
+	text-decoration: none;
+}
