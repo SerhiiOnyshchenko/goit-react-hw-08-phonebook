@@ -1,0 +1,28 @@
+.item {
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px;
+	list-style: none;
+	border-radius: 5px;
+}
+.item:nth-child(odd) {
+	background: #3b0050;
+}
+.item:nth-child(even) {
+	background: #5c007e;
+}
+
+.name {
+	min-width: 200px;
+}
+.btn {
+	width: 80px;
+	height: 30px;
+}
+.btn:after,
+.btn:before {
+	background: #ff1f71;
+	box-shadow: 0 0 5px #ff1f71, 0 0 15px #ff1f71, 0 0 30px #ff1f71, 0 0 60px #ff1f71;
+}
