@@ -16,10 +16,13 @@ export const token = {
 export const register = createAsyncThunk('auth/register', async credentials => {
    try {
       const { data } = await axios.post('/users/signup', credentials);
-      toast.success(`Register!`);
+      toast.success(`Sign up!`);
       token.set(data.token);
       return data;
-   } catch (error) {}
+   } catch (error) {
+      toast.error(`${error.message}`);
+      return error.response.status;
+   }
 });
 
 export const logIn = createAsyncThunk('auth/login', async credentials => {
@@ -30,11 +33,11 @@ export const logIn = createAsyncThunk('auth/login', async credentials => {
       return data;
    } catch (error) {
       toast.error(`Email or password not correct!`);
+      return error.response.status;
    }
 });
 
 export const logOut = createAsyncThunk('auth/logout', async () => {
-   console.log('before logout');
    try {
       await axios.post('/users/logout');
       toast.success(`Logout!`);

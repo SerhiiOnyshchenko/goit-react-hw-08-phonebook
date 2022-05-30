@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 import Loader from 'components/Loader/Loader';
 import PrivateRoute from 'components/PrivateRoute/PrivateRoute';
 import PablicRoute from 'components/PablicRoute/PablicRoute';
+import NotFoundView from 'components/View/NotFoundView';
 
 export default function App() {
    const dispatch = useDispatch();
@@ -46,6 +47,7 @@ export default function App() {
                </PablicRoute>
             }
          />
+         <Route path="*" element={<NotFoundView />} />
       </Routes>
    );
 }

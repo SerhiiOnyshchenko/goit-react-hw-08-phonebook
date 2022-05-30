@@ -9,7 +9,8 @@ import { NavLink } from 'react-router-dom';
 
 export default function RegisterView() {
    const dispath = useDispatch();
-   const isLoading = useSelector(AuthSelector.getIsLoggedIn);
+   const isLoading = useSelector(AuthSelector.getIsLoading);
+   const isError = useSelector(AuthSelector.getError);
 
    const [name, setName] = useState('');
    const [email, setEmail] = useState('');
@@ -18,9 +19,11 @@ export default function RegisterView() {
    const onSubmitForm = async e => {
       e.preventDefault();
       dispath(AuthOperations.register({ name, email, password }));
-      setName('');
-      setEmail('');
-      setPassword('');
+      if (!isError) {
+         setName('');
+         setEmail('');
+         setPassword('');
+      }
    };
 
    return (
@@ -30,7 +33,7 @@ export default function RegisterView() {
             <label className={s.label}>
                Name
                <input
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={e => setName(e.target.value)}
                   type="name"
                   name="name"
                   value={name}
@@ -63,7 +66,7 @@ export default function RegisterView() {
             </label>
             <div className={sBtn.btn + ' ' + s.btn}>
                <button type="submit" disabled={isLoading}>
-                  Login
+                  Sign up
                </button>
             </div>
             <NavLink to="/login">To login form.</NavLink>
