@@ -41,6 +41,7 @@ export const deleteContact = createAsyncThunk(
       }
    }
 );
+
 export const changeContact = createAsyncThunk(
    'contacts/changeContact',
    async ({ id, name, number }) => {

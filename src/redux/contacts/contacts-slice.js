@@ -19,8 +19,8 @@ const contactsSlice = createSlice({
       [addContact.pending](state) {
          state.isRefreshing = true;
       },
-      [addContact.fulfilled](state, action) {
-         state.contacts.push(action.payload);
+      [addContact.fulfilled](state, { payload }) {
+         state.contacts.push(payload);
          state.isRefreshing = false;
       },
       [addContact.rejected](state) {
@@ -29,26 +29,21 @@ const contactsSlice = createSlice({
       [fetchContacts.pending](state) {
          state.isLoading = true;
       },
-      [fetchContacts.fulfilled](state, action) {
-         state.contacts = action.payload;
+      [fetchContacts.fulfilled](state, { payload }) {
+         state.contacts = payload;
          state.isLoading = false;
       },
       [fetchContacts.rejected](state) {
          state.isLoading = false;
       },
 
-      [deleteContact.fulfilled](state, action) {
-         state.contacts = state.contacts.filter(
-            ({ id }) => id !== action.payload
-         );
+      [deleteContact.fulfilled](state, { payload }) {
+         state.contacts = state.contacts.filter(({ id }) => id !== payload);
       },
 
-      [changeContact.fulfilled](state, action) {
-         state.contacts = [...state].contacts.map(
-            contact =>
-               contact.id === action.payload.id &&
-               ((contact.name = action.payload.name),
-               (contact.number = action.payload.number))
+      [changeContact.fulfilled](state, { payload }) {
+         state.contacts = state.contacts.map(contact =>
+            contact.id === payload.id ? payload : contact
          );
       },
    },

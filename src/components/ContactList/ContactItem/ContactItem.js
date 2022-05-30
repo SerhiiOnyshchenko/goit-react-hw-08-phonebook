@@ -1,18 +1,34 @@
 import PropTypes from 'prop-types';
 import s from './ContactItem.module.css';
 import sBtn from '../../../App.module.css';
-import { useDispatch } from 'react-redux';
-import { ContactsOperations } from 'redux/contacts';
+import { useDispatch, useSelector } from 'react-redux';
+import { ContactsOperations, ContactsSelectors } from 'redux/contacts';
+import { toast } from 'react-toastify';
 import { useState } from 'react';
 
 export default function ContactItem({ id, name, number }) {
    const [changeName, setChangeName] = useState(name);
    const [changeNumber, setChangeNumber] = useState(number);
    const [changeContact, setChangeContact] = useState(false);
+   const contacts = useSelector(ContactsSelectors.getContacts);
    const dispatch = useDispatch();
 
    const handelChengeContact = () => {
       if (changeContact) {
+         if (name === changeName && number === changeNumber) {
+            setChangeContact(!changeContact);
+            return;
+         }
+         if (
+            contacts.find(
+               contact =>
+                  contact.name.toLocaleLowerCase() ===
+                     changeName.toLocaleLowerCase() && contact.id !== id
+            )
+         ) {
+            toast.warning(`${changeName} is alredy in contacts`);
+            return;
+         }
          dispatch(
             ContactsOperations.changeContact({
                id,
@@ -53,14 +69,14 @@ export default function ContactItem({ id, name, number }) {
             </>
          ) : (
             <>
-               <span className={s.name}>{changeName}: </span>
-               <span>{changeNumber}</span>
+               <span className={s.name}>{name}: </span>
+               <span>{number}</span>
             </>
          )}
          <div className={s.BlockButtons}>
             <div className={`${sBtn.btn} ${s.btn} ${s.btnEdit}`}>
                <button type="button" onClick={handelChengeContact}>
-                  {changeContact ? 'Edit...' : 'Edit'}
+                  {changeContact ? 'Save' : 'Edit'}
                </button>
             </div>
             <div className={`${sBtn.btn} ${s.btn}`}>
